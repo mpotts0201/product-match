@@ -42,9 +42,13 @@ export default function App() {
         barcodeScannerSettings={{ barcodeTypes: ["upc_a", "upc_e", "ean13", "ean8"] }}
         onBarcodeScanned={scannedBarcode ? undefined : handleScan}
       />
-      <View style={styles.overlayContainer}>
-        <Text style={styles.overlayText}>Scan a barcode</Text>
-      </View>
+      {!scannedBarcode ? 
+        (
+          <View style={styles.overlayContainer}>
+            <Text style={styles.overlayText}>Scan a barcode</Text>
+          </View>
+        )
+      : null}
     </View>
   );
 }
