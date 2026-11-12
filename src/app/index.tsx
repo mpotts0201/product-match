@@ -1,3 +1,4 @@
+import ResultsModal from '@/components/ResultsModal';
 import { BarcodeScanningResult, CameraView, useCameraPermissions } from 'expo-camera';
 import { useState } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
@@ -34,6 +35,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
+      <ResultsModal reset={() => setScannedBarcode(null)} visible={!!scannedBarcode} barcode={scannedBarcode} />
       <CameraView
         style={styles.camera}
         facing="back"
@@ -41,7 +43,7 @@ export default function App() {
         onBarcodeScanned={scannedBarcode ? undefined : handleScan}
       />
       <View style={styles.overlayContainer}>
-        <Text style={styles.overlayText}>{scannedBarcode ? "Barcode: " + scannedBarcode : "Scan a barcode"}</Text>
+        <Text style={styles.overlayText}>Scan a barcode</Text>
       </View>
     </View>
   );
