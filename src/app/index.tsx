@@ -9,19 +9,22 @@ export default function App() {
 
   const scanning = useRef(true);
   const [scannedBarcode, setScannedBarcode] = useState<string | null>(null);
+  const [product, setProduct] = useState<any>(null);
 
   const handleScan = async (result: BarcodeScanningResult) => {
     if (result && result?.data && scanning.current) {
       scanning.current = false;
       setScannedBarcode(result.data);
       const product = await getProduct(result.data);
-      console.log("Product: ", product);
+      setProduct(product);
+      console.log("Product: ", product.product.labels_tags);
     }
   };
 
   const reset = () => {
     setScannedBarcode(null);
     scanning.current = true;
+    setProduct(null);
   };
 
   if (!permission) {
@@ -43,7 +46,12 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <ResultsModal reset={reset} visible={!scanning.current} barcode={scannedBarcode} />
+      <ResultsModal
+        reset={reset}
+        visible={!scanning.current}
+        barcode={scannedBarcode}
+        product={product}
+      />
       <CameraView
         style={styles.camera}
         facing="back"
