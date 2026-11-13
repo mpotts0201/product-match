@@ -35,11 +35,11 @@
       ],
       [
         "expo-camera",
-          {
-            "cameraPermission": "Allow Product Match to access your camera",
-            "recordAudioAndroid": false,
-            "barcodeScannerEnabled": true
-          }
+        {
+          "cameraPermission": "Allow Product Match to access your camera",
+          "recordAudioAndroid": false,
+          "barcodeScannerEnabled": true
+        }
       ]
     ],
     "experiments": {
