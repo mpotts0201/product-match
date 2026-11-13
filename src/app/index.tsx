@@ -1,20 +1,27 @@
+import { getProduct } from "@/api/openFoodFacts";
 import ResultsModal from "@/components/ResultsModal";
 import { BarcodeScanningResult, CameraView, useCameraPermissions } from "expo-camera";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 
 export default function App() {
   const [permission, requestPermission] = useCameraPermissions();
 
+  const scanning = useRef(true);
   const [scannedBarcode, setScannedBarcode] = useState<string | null>(null);
 
-  const handleScan = (result: BarcodeScanningResult) => {
-    if (result && result?.data && !scannedBarcode) {
-      console.log("Barcode: ", result.data);
+  const handleScan = async (result: BarcodeScanningResult) => {
+    if (result && result?.data && scanning.current) {
+      scanning.current = false;
       setScannedBarcode(result.data);
-    } else {
-      setScannedBarcode(null);
+      const product = await getProduct(result.data);
+      console.log("Product: ", product);
     }
+  };
+
+  const reset = () => {
+    setScannedBarcode(null);
+    scanning.current = true;
   };
 
   if (!permission) {
@@ -36,18 +43,14 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <ResultsModal
-        reset={() => setScannedBarcode(null)}
-        visible={!!scannedBarcode}
-        barcode={scannedBarcode}
-      />
+      <ResultsModal reset={reset} visible={!scanning.current} barcode={scannedBarcode} />
       <CameraView
         style={styles.camera}
         facing="back"
         barcodeScannerSettings={{ barcodeTypes: ["upc_a", "upc_e", "ean13", "ean8"] }}
-        onBarcodeScanned={scannedBarcode ? undefined : handleScan}
+        onBarcodeScanned={!scanning.current ? undefined : handleScan}
       />
-      {!scannedBarcode ? (
+      {scanning.current ? (
         <View style={styles.overlayContainer}>
           <Text style={styles.overlayText}>Scan a barcode</Text>
         </View>
