@@ -33,7 +33,7 @@ export async function getAlternatives(category: string, brands: string[] = []) {
     ];
     const q = parts.join(" ");
     const res = await fetch(
-      `https://search.openfoodfacts.org/search?q=${encodeURIComponent(q)}&page_size=10&sort_by=-unique_scans_n`,
+      `https://search.openfoodfacts.org/search?q=${encodeURIComponent(q)}&page_size=50&sort_by=-unique_scans_n`,
       {
         method: "GET",
         headers: { Accept: "application/json" },

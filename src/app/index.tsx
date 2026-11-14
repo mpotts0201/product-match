@@ -1,5 +1,5 @@
-import { getProduct } from "@/api/openFoodFacts";
 import ResultsModal from "@/components/ResultsModal";
+import useProductLookup from "@/hooks/useProductLookup";
 import { BarcodeScanningResult, CameraView, useCameraPermissions } from "expo-camera";
 import { useRef, useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
@@ -9,22 +9,20 @@ export default function App() {
 
   const scanning = useRef(true);
   const [scannedBarcode, setScannedBarcode] = useState<string | null>(null);
-  const [product, setProduct] = useState<any>(null);
+  const { lookup, reset, error, product, alternatives } = useProductLookup();
 
   const handleScan = async (result: BarcodeScanningResult) => {
     if (result && result?.data && scanning.current) {
       scanning.current = false;
       setScannedBarcode(result.data);
-      const productRes = await getProduct(result.data);
-      setProduct(productRes);
-      console.log("Product: ", productRes.product.labels_tags);
+      await lookup(result.data);
     }
   };
 
-  const reset = () => {
+  const resetScan = () => {
     setScannedBarcode(null);
     scanning.current = true;
-    setProduct(null);
+    reset();
   };
 
   if (!permission) {
@@ -47,10 +45,11 @@ export default function App() {
   return (
     <View style={styles.container}>
       <ResultsModal
-        reset={reset}
+        reset={resetScan}
         visible={!scanning.current}
         barcode={scannedBarcode}
         product={product}
+        alternatives={alternatives}
       />
       <CameraView
         style={styles.camera}

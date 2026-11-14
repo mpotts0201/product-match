@@ -33,6 +33,7 @@ export default function useProductLookup() {
           altRes = await getAlternatives(compared_to_category, brands_tags);
           if (altRes?.hits) {
             setAlternatives(altRes.hits);
+            console.log("ALTS: ", altRes.hits);
           }
         } catch (err) {
           setError("Alternatives Not Found.");
