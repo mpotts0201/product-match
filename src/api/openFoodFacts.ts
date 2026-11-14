@@ -21,7 +21,7 @@ export async function getProduct(barcode: string) {
 }
 
 // category is "compared_to_category" and brands from "brands_tags" in json from getProduct
-export async function getAlternatives(category: string, brands: string[]) {
+export async function getAlternatives(category: string, brands: string[] = []) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 8000);
 
@@ -33,7 +33,12 @@ export async function getAlternatives(category: string, brands: string[]) {
     ];
     const q = parts.join(" ");
     const res = await fetch(
-      `https://search.openfoodfacts.org/search?q=${q}&page_size=10&sort_by=-unique_scans_n`,
+      `https://search.openfoodfacts.org/search?q=${encodeURIComponent(q)}&page_size=10&sort_by=-unique_scans_n`,
+      {
+        method: "GET",
+        headers: { Accept: "application/json" },
+        signal: controller.signal,
+      },
     );
 
     if (!res.ok) {

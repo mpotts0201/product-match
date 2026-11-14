@@ -15,9 +15,9 @@ export default function App() {
     if (result && result?.data && scanning.current) {
       scanning.current = false;
       setScannedBarcode(result.data);
-      const product = await getProduct(result.data);
-      setProduct(product);
-      console.log("Product: ", product.product.labels_tags);
+      const productRes = await getProduct(result.data);
+      setProduct(productRes);
+      console.log("Product: ", productRes.product.labels_tags);
     }
   };
 
