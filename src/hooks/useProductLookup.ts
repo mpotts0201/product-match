@@ -1,4 +1,5 @@
 import { getAlternatives, getProduct } from "@/api/openFoodFacts";
+import { alternativesFilter } from "@/lib/alternativesFilter";
 import { useState } from "react";
 
 export default function useProductLookup() {
@@ -32,7 +33,8 @@ export default function useProductLookup() {
                     setAltsLoading(true);
                     altRes = await getAlternatives(compared_to_category, brands_tags);
                     if (altRes?.hits) {
-                        setAlternatives(altRes.hits);
+                        const rankedAlts = alternativesFilter(productRes.product, altRes.hits);
+                        setAlternatives(rankedAlts);
                         console.log("ALTS: ", altRes.hits);
                     }
                 } catch (err) {
