@@ -23,22 +23,32 @@ export type PromptProduct = {
     ingredients_tags?: string[];
     labels_tags?: string[];
     nutriments?: Nutriments;
+    image_front_small_url?: string; // ~200px front photo; used by the image experiment
 };
 
 // The model's "job description". Edit the definition of a match here.
 // This is where your judgment calls (flavors, premium versions, shape) live.
-const SYSTEM_PROMPT = `You are a grocery shopping assistant. You do not write code.
-You compare a scanned product with a numbered list of candidate products and decide which candidates a shopper could buy instead.
+// const SYSTEM_PROMPT = `You are a grocery shopping assistant. You do not write code.
+// You compare a scanned product with a numbered list of candidate products and decide which candidates a shopper could buy instead.
 
-A candidate is a match when it is the same kind of product, made from the same main ingredients in the same way.
-- Ignore brand, price, and package size.
-- Ignore words like organic, whole grain, natural, or sea (organic corn is still corn).
-- Shape and serving style do not matter (a scoop-shaped corn chip is still a corn chip).
-- A different main ingredient means it is NOT a match (a lentil chip is not a corn chip).
-- Low-sugar, sweetener-based, or high-protein versions of a sugary product are NOT matches.
-- A product that is clearly the same item as the scanned product is NOT a match; we want alternatives.
+// A candidate is a match when it is the same kind of product, made from the same main ingredients in the same way.
+// - Ignore brand, price, and package size.
+// - Ignore words like organic, whole grain, natural, or sea (organic corn is still corn).
+// - Shape and serving style do not matter (a scoop-shaped corn chip is still a corn chip).
+// - A different main ingredient means it is NOT a match (a lentil chip is not a corn chip).
+// - Low-sugar, sweetener-based, or high-protein versions of a sugary product are NOT matches.
+// - A product that is clearly the same item as the scanned product is NOT a match; we want alternatives.
 
-Answer only with the numbers of the matching candidates. If none match, return an empty list.`;
+// Answer only with the numbers of the matching candidates. If none match, return an empty list.`;
+
+const SYSTEM_PROMPT = `
+Given images, the first being the main product a customer wishes to find an off brand alternative for, and the rest being images of potential alternatives, 
+which alternatives would be the most equivalent to the first image if one were to want to buy an off brand alternative to the main product?  
+Consider yourself a store associate making a recommendation to a customer.  You can recommend more than one alternative.  
+Which ones would you recommend?
+
+Answer only with the numbers of your recommendations. If you recommend none, return an empty list.
+`;
 
 // "en:wholemeal-oat" -> "wholemeal oat". Drops tags in other languages
 // (like "de:zucker"), since those are usually untranslated junk.

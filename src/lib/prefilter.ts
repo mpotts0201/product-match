@@ -13,6 +13,7 @@ import type { PromptProduct } from "./equivalencePrompt";
 export type PrefilterOptions = {
     maxCandidates?: number; // how many survivors to keep, in search order
     ingredientWindow?: number; // how far into a candidate's tags to look for the main ingredient
+    requireImage?: boolean; // drop candidates with no front photo (shoppers need to see what to look for)
 };
 
 // Tags that say almost nothing about what a product is. Every cereal has
@@ -123,7 +124,7 @@ function sharesMainIngredient(candidate: PromptProduct, core: string[], window: 
 export function prefilterCandidates<T extends PromptProduct & { brands_tags?: string[] }>(
     scanned: T,
     candidates: T[],
-    { maxCandidates = 15, ingredientWindow = 6 }: PrefilterOptions = {},
+    { maxCandidates = 15, ingredientWindow = 6, requireImage = false }: PrefilterOptions = {},
 ): T[] {
     const scannedBrands = brandSet(scanned);
     const scannedName = normalizeBrand(scanned.product_name ?? "");
@@ -140,6 +141,7 @@ export function prefilterCandidates<T extends PromptProduct & { brands_tags?: st
             return true;
         })
         .filter((c) => (c.product_name ?? "").trim().length > 0)
+        .filter((c) => !requireImage || Boolean(c.image_front_small_url))
         .filter((c) => !isSameProductOrBrand(c, scannedBrands, scannedName))
         .filter((c) => sharesMainIngredient(c, core, ingredientWindow))
         .slice(0, maxCandidates);

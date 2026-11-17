@@ -33,7 +33,8 @@
         "@types/react": "~19.3.0",
         "prettier": "^3.10.1",
         "tsx": "^4.23.15",
-        "typescript": "~6.0.3"
+        "typescript": "~6.0.3",
+        "undici": "^8.12.4"
     },
     "scripts": {
         "start": "expo start",
