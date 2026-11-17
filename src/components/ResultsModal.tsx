@@ -1,12 +1,12 @@
 import {
-  Image,
-  Modal,
-  ModalProps,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    Image,
+    Modal,
+    ModalProps,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 
 interface ResultsModalProps extends ModalProps {
@@ -25,16 +25,14 @@ export default function ResultsModal({
 }: ResultsModalProps) {
     const renderAlternatives = () => {
         return alternatives?.map((alt, i) => {
-            const { product, matchWeight } = alt;
             return (
-                <View key={product.product_name + i}>
-                    <Text>{product.product_name}</Text>
-                    <Text>Weighted Ingredients Match Score: {matchWeight}</Text>
+                <View key={alt.product_name + i}>
+                    <Text>{alt.product_name}</Text>
                     <Image
                         resizeMode="contain"
                         width={300}
                         height={300}
-                        source={{ uri: product.image_url }}
+                        source={{ uri: alt.image_url }}
                     />
                 </View>
             );
