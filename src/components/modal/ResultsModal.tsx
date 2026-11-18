@@ -50,9 +50,11 @@ export default function ResultsModal({
                         </TouchableOpacity>
                     </View>
                     <FlatList
+                        contentContainerStyle={styles.flatlistContainer}
                         data={alternatives}
                         ListHeaderComponent={renderScannedProduct}
                         renderItem={renderAlternatives}
+                        // scrollIndicatorInsets={}
                     />
                 </View>
             </View>
@@ -60,23 +62,33 @@ export default function ResultsModal({
     );
 }
 
+const padding = { paddingLeft: 24, paddingRight: 24 };
+
 const styles = StyleSheet.create({
     modalRoot: {
         flex: 1,
         justifyContent: "flex-end",
+        width: "100%",
     },
     sheet: {
         backgroundColor: "rgba(255, 255, 255, 0.9)",
-        padding: 24,
+        paddingTop: 24,
         paddingBottom: 48,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         gap: 12,
         height: "80%",
+        width: "100%",
     },
     modalHeader: {
+        ...padding,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
+    },
+    flatlistContainer: {
+        ...padding,
+        alignSelf: "stretch",
+        width: "100%",
     },
 });
