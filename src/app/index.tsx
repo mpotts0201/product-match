@@ -1,4 +1,4 @@
-import ResultsModal from "@/components/ResultsModal";
+import ResultsModal from "@/components/modal/ResultsModal";
 import useProductLookup from "@/hooks/useProductLookup";
 import { BarcodeScanningResult, CameraView, useCameraPermissions } from "expo-camera";
 import { useRef, useState } from "react";
