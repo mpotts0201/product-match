@@ -9,7 +9,8 @@ export default function App() {
 
     const scanning = useRef(true);
     const [scannedBarcode, setScannedBarcode] = useState<string | null>(null);
-    const { lookup, reset, error, product, alternatives } = useProductLookup();
+    const { lookup, reset, error, product, alternatives, altsLoading, productLoading } =
+        useProductLookup();
 
     const handleScan = async (result: BarcodeScanningResult) => {
         if (result && result?.data && scanning.current) {
@@ -50,6 +51,8 @@ export default function App() {
                 barcode={scannedBarcode}
                 product={product}
                 alternatives={alternatives}
+                productLoading={productLoading}
+                altsLoading={altsLoading}
             />
             <CameraView
                 style={styles.camera}

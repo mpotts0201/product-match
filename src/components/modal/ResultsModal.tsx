@@ -1,5 +1,6 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import {
+    ActivityIndicator,
     FlatList,
     ListRenderItem,
     Modal,
@@ -17,6 +18,8 @@ interface ResultsModalProps extends ModalProps {
     reset: () => void;
     product?: any;
     alternatives?: any[];
+    productLoading: boolean;
+    altsLoading: boolean;
 }
 
 export default function ResultsModal({
@@ -25,13 +28,15 @@ export default function ResultsModal({
     barcode,
     product,
     alternatives,
+    productLoading,
+    altsLoading,
 }: ResultsModalProps) {
     const renderAlternatives: ListRenderItem<any> = ({ item }) => {
-        return <ProductListResult item={item} />;
+        return altsLoading ? <ActivityIndicator /> : <ProductListResult item={item} />;
     };
 
     const renderScannedProduct = () => {
-        return <ScannedProduct product={product} />;
+        return productLoading ? <ActivityIndicator /> : <ScannedProduct product={product} />;
     };
 
     return (

@@ -7,7 +7,7 @@ type ScannedProductProps = {
 export default function ScannedProduct({ product }: ScannedProductProps) {
     return (
         <View>
-            <Text style={styles.modalSection}>Product Information</Text>
+            <Text style={styles.modalSection}>Scanned Product</Text>
             {product?.product_name ? <Text>{product.product_name}</Text> : null}
             {product?.image_url ? (
                 <Image
@@ -35,7 +35,7 @@ export default function ScannedProduct({ product }: ScannedProductProps) {
                     {product.labels_tags.includes("en:no-gluten") ? "True" : "False"}
                 </Text>
             ) : null}
-            <Text style={styles.modalSection}>Alternatives</Text>
+            <Text style={styles.modalSection}>Alternative Products</Text>
         </View>
     );
 }
