@@ -1,4 +1,5 @@
-import { Image, Text, View } from "react-native";
+import { Image, Text } from "react-native";
+import Card from "../card/Card";
 
 type ProductListResultProps = {
     item: any;
@@ -6,9 +7,9 @@ type ProductListResultProps = {
 
 export default function ProductListResult({ item }: ProductListResultProps) {
     return (
-        <View>
+        <Card title={item.product_name}>
             <Text>{item.product_name}</Text>
             <Image resizeMode="contain" width={300} height={300} source={{ uri: item.image_url }} />
-        </View>
+        </Card>
     );
 }

@@ -1,26 +1,42 @@
-import { StyleSheet, View, ViewProps } from "react-native";
+import { useState } from "react";
+import { LayoutAnimation, Pressable, StyleSheet, Text, View, ViewProps } from "react-native";
 import CardText from "../text/CardText";
 
 type CardProps = ViewProps & {
     title: string;
+    expandedToggleable?: boolean;
 };
 
-export default function Card({ title, children }: CardProps) {
+export default function Card({ title, children, expandedToggleable = true }: CardProps) {
+    const [expanded, setExpanded] = useState<boolean>(!expandedToggleable);
+
+    function toggleExpanded() {
+        if (expandedToggleable) {
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+            setExpanded((e) => !e);
+        }
+    }
+
     return (
-        <View style={styles.cardContainer}>
-            <View style={styles.cardHeader}>
+        <Pressable style={styles.cardContainer} onPress={toggleExpanded}>
+            <View>
                 <CardText variant="title">{title}</CardText>
             </View>
             <View style={styles.cardBody}>{children}</View>
-        </View>
+            {expanded ? (
+                <View>
+                    <Text>Expanded Content</Text>
+                </View>
+            ) : null}
+        </Pressable>
     );
 }
 
 const styles = StyleSheet.create({
     cardContainer: {
         flexDirection: "column",
-        marginTop: 30,
-        marginBottom: 30,
+        marginTop: 15,
+        marginBottom: 15,
         padding: 12,
         borderRadius: 8,
         backgroundColor: "white",
@@ -32,11 +48,7 @@ const styles = StyleSheet.create({
         // Android
         elevation: 4,
     },
-    cardHeader: {
-        borderBottomColor: "grey",
-    },
     cardBody: {
-        marginTop: 12,
         flexDirection: "row",
     },
 });

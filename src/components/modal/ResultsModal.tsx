@@ -10,8 +10,7 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import ProductListResult from "../product/ProductListResult";
-import ScannedProduct from "../product/ScannedProduct";
+import Product from "../product/Product";
 
 interface ResultsModalProps extends ModalProps {
     barcode: string | null;
@@ -32,11 +31,19 @@ export default function ResultsModal({
     altsLoading,
 }: ResultsModalProps) {
     const renderAlternatives: ListRenderItem<any> = ({ item }) => {
-        return altsLoading ? <ActivityIndicator /> : <ProductListResult item={item} />;
+        return altsLoading ? <ActivityIndicator /> : <Product product={item} expandedToggleable />;
     };
 
     const renderScannedProduct = () => {
-        return productLoading ? <ActivityIndicator /> : <ScannedProduct product={product} />;
+        return productLoading || !product ? (
+            <ActivityIndicator />
+        ) : (
+            <>
+                <Text style={styles.modalSection}>Scanned Product</Text>
+                <Product product={product} expandedToggleable={false} />
+                <Text style={styles.modalSection}>Alternative Products</Text>
+            </>
+        );
     };
 
     return (
@@ -54,7 +61,6 @@ export default function ResultsModal({
                         data={alternatives}
                         ListHeaderComponent={renderScannedProduct}
                         renderItem={renderAlternatives}
-                        // scrollIndicatorInsets={}
                     />
                 </View>
             </View>
@@ -85,6 +91,10 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
+    },
+    modalSection: {
+        fontSize: 20,
+        fontWeight: 700,
     },
     flatlistContainer: {
         ...padding,
