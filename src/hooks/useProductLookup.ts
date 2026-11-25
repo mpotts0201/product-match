@@ -39,6 +39,7 @@ export default function useProductLookup() {
                         const mappedAlts = altRes.hits.map(mapSearchHit);
                         const rankedAlts = alternativesFilter(mappedProduct, mappedAlts);
                         setAlternatives(rankedAlts);
+                        // setAlternatives(mappedAlts);
                         console.log("ALTS: ", altRes.hits);
                     }
                 } catch (err) {

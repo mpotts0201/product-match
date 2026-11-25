@@ -1,5 +1,6 @@
 import { Product as ProductType } from "@/types/product";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { useEffect, useState } from "react";
 import {
     ActivityIndicator,
     FlatList,
@@ -11,7 +12,9 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
+import IngredientsSelection from "../product/IngredientsSelection";
 import Product from "../product/Product";
+import CardText from "../text/CardText";
 
 interface ResultsModalProps extends ModalProps {
     barcode: string | null;
@@ -35,17 +38,54 @@ export default function ResultsModal({
         return altsLoading ? <ActivityIndicator /> : <Product product={item} expandedToggleable />;
     };
 
+    const [ingredientSelections, setIngredientSelections] = useState<string[]>([]);
+
+    useEffect(() => {
+        setIngredientSelections(product?.mainIngredient ? [product.mainIngredient] : []);
+    }, [product?.code]);
+
+    const handleSelectIngredient = (selection: string) => {
+        if (ingredientSelections.includes(selection)) {
+            const newSelections = ingredientSelections.filter((ing: string) => ing != selection);
+            setIngredientSelections(newSelections);
+        } else {
+            const newSelections = [...ingredientSelections, selection];
+            setIngredientSelections(newSelections);
+        }
+    };
+
+    const filterAlts = () => {
+        return alternatives?.filter((alt) => {
+            return ingredientSelections.every((ing) => alt.ingredientTags.includes(ing));
+        });
+    };
+
     const renderScannedProduct = () => {
         return productLoading || !product ? (
             <ActivityIndicator />
         ) : (
             <>
                 <Text style={styles.modalSection}>Scanned Product</Text>
-                <Product product={product} expandedToggleable={false} />
+                <Product isMainProduct product={product} expandedToggleable={false} />
                 <Text style={styles.modalSection}>Alternative Products</Text>
+                <CardText variant="subtitle" style={{ marginTop: 15 }}>
+                    Matched Category - {product.category?.split(":").pop()}
+                </CardText>
+                {!!product && !!product.ingredientSelections ? (
+                    <IngredientsSelection
+                        selectedIngredients={ingredientSelections}
+                        ingredients={product.ingredientSelections}
+                        onPress={handleSelectIngredient}
+                    />
+                ) : null}
             </>
         );
     };
+
+    console.log("main:", product?.mainIngredient);
+    console.log("selected:", ingredientSelections);
+    console.log("first alt tags:", alternatives?.[0]?.ingredientTags?.slice(0, 8));
+    console.log("filtered count:", filterAlts()?.length, "of", alternatives?.length);
 
     return (
         <Modal visible={!!visible} animationType="slide" transparent onRequestClose={reset}>
@@ -59,7 +99,7 @@ export default function ResultsModal({
                     </View>
                     <FlatList
                         contentContainerStyle={styles.flatlistContainer}
-                        data={alternatives}
+                        data={filterAlts()}
                         ListHeaderComponent={renderScannedProduct}
                         renderItem={renderAlternatives}
                     />

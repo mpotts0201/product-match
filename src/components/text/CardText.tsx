@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TextProps } from "react-native";
 
 type CardTextProps = TextProps & {
-    variant?: "title" | "body";
+    variant?: "title" | "body" | "subtitle";
 };
 
 export default function CardText({ variant = "body", children, style }: CardTextProps) {
@@ -23,5 +23,10 @@ const styles = StyleSheet.create({
         fontWeight: 600,
         marginBottom: 12,
         marginRight: 6,
+    },
+    subtitle: {
+        ...fontColor,
+        fontSize: 14,
+        fontWeight: 500,
     },
 });

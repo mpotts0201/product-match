@@ -11,4 +11,6 @@ export type Product = {
     labels: string[];
     category?: string; // for the alternatives search
     traces: string[];
+    mainIngredient?: string;
+    ingredientSelections?: string[];
 };

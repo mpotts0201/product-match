@@ -6,6 +6,7 @@ import CheckIcon from "../icons/CheckIcon";
 import CardText from "../text/CardText";
 
 type ProductProps = {
+    isMainProduct?: boolean;
     product: ProductType;
     expandedToggleable: boolean;
 };
@@ -26,11 +27,11 @@ function CardLine({ includes, text }: CardLineProps) {
     );
 }
 
-export default function Product({ product, expandedToggleable }: ProductProps) {
+export default function Product({ product, expandedToggleable, isMainProduct }: ProductProps) {
     return (
         <Card title={product.name} expandedToggleable={expandedToggleable}>
             <View style={styles.cardLeft}>
-                {product?.imageUrl ? (
+                {!!product?.imageUrl ? (
                     <Image
                         style={{ borderRadius: 15 }}
                         resizeMode="cover"
@@ -41,19 +42,27 @@ export default function Product({ product, expandedToggleable }: ProductProps) {
                 ) : null}
             </View>
             <View style={styles.cardRight}>
-                {product?.allergens ? (
+                {!!product.category ? (
+                    <CardText variant="body">
+                        Category - {product.category.split(":").pop()}
+                    </CardText>
+                ) : null}
+                {!!product.mainIngredient ? (
+                    <CardText variant="body">Main Ingredient - {product.mainIngredient}</CardText>
+                ) : null}
+                {!!product?.allergens ? (
                     <CardLine
                         includes={!product.allergens.includes("en:gluten")}
                         text="Nutritionally Gluten Free"
                     />
                 ) : null}
-                {product?.traces ? (
+                {!!product?.traces ? (
                     <CardLine
                         includes={!product.traces.includes("en:gluten")}
                         text="No Gluten Traces Contamination"
                     />
                 ) : null}
-                {product?.labels ? (
+                {!!product?.labels ? (
                     <CardLine
                         includes={product.labels.includes("en:no-gluten")}
                         text="Labeled as Gluten Free"

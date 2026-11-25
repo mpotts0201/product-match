@@ -1,6 +1,6 @@
 import { Product } from "@/types/product";
 
-const GENERIC_TAGS = new Set([
+export const GENERIC_TAGS = new Set([
     "cereal",
     "flour",
     "cereal-flour",
@@ -13,6 +13,10 @@ const GENERIC_TAGS = new Set([
     "minerals",
     "ingredients",
     "water",
+    "salt",
+    "flavoring",
+    "flavouring",
+    "sugar",
 ]);
 
 export function alternativesFilter(product: Product, alts: Product[]) {
@@ -43,33 +47,21 @@ export function alternativesFilter(product: Product, alts: Product[]) {
 
         return !hasSameBrand;
     });
-    // Keep same main ingredient
-    const mainIngredients = (product.ingredientTags ?? []).slice(0, 6).map((ing: string) => {
-        return formatIngredients(ing);
-    });
 
-    let mainIngredient = "";
-    for (const ing of mainIngredients) {
-        if (!GENERIC_TAGS.has(ing ?? "")) {
-            mainIngredient = ing ?? "";
-            break;
-        }
-    }
-
-    const altsWithMainIngredient = mainIngredient
+    const altsWithMainIngredient = product.mainIngredient
         ? dedupedByBrand.filter((alt) => {
               const cleanIngs = (alt.ingredientTags ?? []).slice(0, 6).map((ing: string) => {
                   return formatIngredients(ing);
               });
               if (cleanIngs.length == 0) return false;
-              return cleanIngs.includes(mainIngredient);
+              return cleanIngs.includes(product.mainIngredient);
           })
         : dedupedByBrand;
 
     return altsWithMainIngredient;
 }
 
-function normalizeTag(tag: string): string {
+export function normalizeTag(tag: string): string {
     return tag
         .replace(/^[a-z]{2}:/, "")
         .toLowerCase()
@@ -77,6 +69,6 @@ function normalizeTag(tag: string): string {
         .replace(/\s+/g, "-");
 }
 
-function formatIngredients(tag: string) {
+export function formatIngredients(tag: string) {
     return tag.split(":").pop();
 }
