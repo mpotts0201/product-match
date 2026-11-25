@@ -1,11 +1,13 @@
+import { mapBarcodeProduct, mapSearchHit } from "@/api/mappers";
 import { getAlternatives, getProduct } from "@/api/openFoodFacts";
 import { alternativesFilter } from "@/lib/alternativesFilter";
+import { Product } from "@/types/product";
 import { useState } from "react";
 
 export default function useProductLookup() {
-    const [product, setProduct] = useState<any>(null);
+    const [product, setProduct] = useState<Product | null>(null);
     const [error, setError] = useState<string>("");
-    const [alternatives, setAlternatives] = useState<any[]>([]);
+    const [alternatives, setAlternatives] = useState<Product[]>([]);
     const [productLoading, setProductLoading] = useState<boolean>(false);
     const [altsLoading, setAltsLoading] = useState<boolean>(false);
 
@@ -24,16 +26,18 @@ export default function useProductLookup() {
             setProductLoading(false);
         }
         if (productRes?.product) {
-            setProduct(productRes.product);
+            const mappedProduct = mapBarcodeProduct(productRes.product);
+            setProduct(mappedProduct);
 
-            const compared_to_category: string = productRes.product?.compared_to_category;
-            const brands_tags: string[] = productRes.product?.brands_tags || [];
-            if (compared_to_category) {
+            const productCategory: string = mappedProduct.category ?? "";
+            const brandTags: string[] = mappedProduct.brandTags || [];
+            if (productCategory) {
                 try {
                     setAltsLoading(true);
-                    altRes = await getAlternatives(compared_to_category, brands_tags);
+                    altRes = await getAlternatives(productCategory, brandTags);
                     if (altRes?.hits) {
-                        const rankedAlts = alternativesFilter(productRes.product, altRes.hits);
+                        const mappedAlts = altRes.hits.map(mapSearchHit);
+                        const rankedAlts = alternativesFilter(mappedProduct, mappedAlts);
                         setAlternatives(rankedAlts);
                         console.log("ALTS: ", altRes.hits);
                     }

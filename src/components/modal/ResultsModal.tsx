@@ -1,3 +1,4 @@
+import { Product as ProductType } from "@/types/product";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import {
     ActivityIndicator,
@@ -15,8 +16,8 @@ import Product from "../product/Product";
 interface ResultsModalProps extends ModalProps {
     barcode: string | null;
     reset: () => void;
-    product?: any;
-    alternatives?: any[];
+    product?: ProductType | null;
+    alternatives?: ProductType[];
     productLoading: boolean;
     altsLoading: boolean;
 }

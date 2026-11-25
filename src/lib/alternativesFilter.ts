@@ -1,3 +1,5 @@
+import { Product } from "@/types/product";
+
 const GENERIC_TAGS = new Set([
     "cereal",
     "flour",
@@ -13,24 +15,12 @@ const GENERIC_TAGS = new Set([
     "water",
 ]);
 
-export function alternativesFilter(product: any, alts: any[]) {
-    // preserve alts with ingredients weighted to the scanned product
-    const weightedAlts = alts.map((alt: any) => {
-        const matchWeight = product.ingredients.reduce((acc: number, ing: any) => {
-            if ((alt.ingredients_tags ?? []).includes(ing.id)) {
-                acc += ing.percent_estimate ?? 0;
-            }
-            return acc;
-        }, 0);
-
-        return { product: alt, matchWeight };
-    });
-
+export function alternativesFilter(product: Product, alts: Product[]) {
     // dedupe by barcode
     // require name and photo
     const seenBarcodes = new Set<string>([product.code]);
-    const dedupedCleanAlts = alts.filter((alt) => {
-        if (!seenBarcodes.has(alt.code) && alt.product_name && alt.image_front_small_url) {
+    const dedupedCleanAlts = alts.filter((alt: Product) => {
+        if (!seenBarcodes.has(alt.code) && alt.name && alt.imageUrl) {
             seenBarcodes.add(alt.code);
             return true;
         }
@@ -39,12 +29,12 @@ export function alternativesFilter(product: any, alts: any[]) {
 
     // drop same brand
     const productBrands = new Set<string>();
-    (product.brands_tags ?? []).forEach((brand: string) => {
+    (product.brandTags ?? []).forEach((brand: string) => {
         productBrands.add(normalizeTag(brand));
     });
 
     const dedupedByBrand = dedupedCleanAlts.filter((alt) => {
-        const hasSameBrand = (alt.brands_tags ?? []).reduce((acc: boolean, brand: string) => {
+        const hasSameBrand = (alt.brandTags ?? []).reduce((acc: boolean, brand: string) => {
             if (productBrands.has(normalizeTag(brand))) {
                 return true;
             }
@@ -54,21 +44,21 @@ export function alternativesFilter(product: any, alts: any[]) {
         return !hasSameBrand;
     });
     // Keep same main ingredient
-    const mainIngredients = (product.ingredients_tags ?? []).slice(0, 6).map((ing: string) => {
+    const mainIngredients = (product.ingredientTags ?? []).slice(0, 6).map((ing: string) => {
         return formatIngredients(ing);
     });
 
     let mainIngredient = "";
     for (const ing of mainIngredients) {
-        if (!GENERIC_TAGS.has(ing)) {
-            mainIngredient = ing;
+        if (!GENERIC_TAGS.has(ing ?? "")) {
+            mainIngredient = ing ?? "";
             break;
         }
     }
 
     const altsWithMainIngredient = mainIngredient
         ? dedupedByBrand.filter((alt) => {
-              const cleanIngs = (alt.ingredients_tags ?? []).slice(0, 6).map((ing: string) => {
+              const cleanIngs = (alt.ingredientTags ?? []).slice(0, 6).map((ing: string) => {
                   return formatIngredients(ing);
               });
               if (cleanIngs.length == 0) return false;

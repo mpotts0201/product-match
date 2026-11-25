@@ -1,3 +1,4 @@
+import { Product as ProductType } from "@/types/product";
 import { Image, StyleSheet, View, ViewProps } from "react-native";
 import Card from "../card/Card";
 import CancelIcon from "../icons/CancelIcon";
@@ -5,7 +6,7 @@ import CheckIcon from "../icons/CheckIcon";
 import CardText from "../text/CardText";
 
 type ProductProps = {
-    product: any;
+    product: ProductType;
     expandedToggleable: boolean;
 };
 
@@ -27,34 +28,34 @@ function CardLine({ includes, text }: CardLineProps) {
 
 export default function Product({ product, expandedToggleable }: ProductProps) {
     return (
-        <Card title={product.product_name} expandedToggleable={expandedToggleable}>
+        <Card title={product.name} expandedToggleable={expandedToggleable}>
             <View style={styles.cardLeft}>
-                {product?.image_url ? (
+                {product?.imageUrl ? (
                     <Image
                         style={{ borderRadius: 15 }}
                         resizeMode="cover"
                         width={100}
                         height={100}
-                        source={{ uri: product.image_url }}
+                        source={{ uri: product.imageUrl }}
                     />
                 ) : null}
             </View>
             <View style={styles.cardRight}>
-                {product?.allergens_tags ? (
+                {product?.allergens ? (
                     <CardLine
-                        includes={!product.allergens_tags.includes("en:gluten")}
+                        includes={!product.allergens.includes("en:gluten")}
                         text="Nutritionally Gluten Free"
                     />
                 ) : null}
-                {product?.traces_tags ? (
+                {product?.traces ? (
                     <CardLine
-                        includes={!product.traces_tags.includes("en:gluten")}
+                        includes={!product.traces.includes("en:gluten")}
                         text="No Gluten Traces Contamination"
                     />
                 ) : null}
-                {product?.labels_tags ? (
+                {product?.labels ? (
                     <CardLine
-                        includes={product.labels_tags.includes("en:no-gluten")}
+                        includes={product.labels.includes("en:no-gluten")}
                         text="Labeled as Gluten Free"
                     />
                 ) : null}

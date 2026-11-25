@@ -22,14 +22,15 @@ export async function getProduct(barcode: string) {
 
 // category is "compared_to_category" and brands from "brands_tags" in json from getProduct
 export async function getAlternatives(category: string, brands: string[] = []) {
+    console.log(category, brands);
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8000);
+    const timeout = setTimeout(() => controller.abort(), 30000);
 
     try {
         const parts = [
-            `categories_tags:"${category}"`,
-            `countries_tags:"en:united-states"`,
-            ...brands.map((b) => `-brands_tags:"${b}"`),
+            `categories:"${category}"`,
+            `countries:"en:united-states"`,
+            ...brands.map((b) => `-brands:"${b}"`),
         ];
         const q = parts.join(" ");
         const res = await fetch(
