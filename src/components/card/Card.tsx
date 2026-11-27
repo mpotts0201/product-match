@@ -20,7 +20,9 @@ export default function Card({ title, children, expandedToggleable = true }: Car
     return (
         <Pressable style={styles.cardContainer} onPress={toggleExpanded}>
             <View>
-                <CardText variant="title">{title}</CardText>
+                <CardText variant="title" style={{ marginBottom: 15 }}>
+                    {title}
+                </CardText>
             </View>
             <View style={styles.cardBody}>{children}</View>
             {expanded ? (

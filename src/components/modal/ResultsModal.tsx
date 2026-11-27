@@ -1,11 +1,13 @@
 import { filterGenericTags } from "@/lib/alternativesFilter";
 import { Product as ProductType } from "@/types/product";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
     ActivityIndicator,
     FlatList,
+    LayoutAnimation,
     ListRenderItem,
+    ListViewToken,
     Modal,
     ModalProps,
     StyleSheet,
@@ -15,6 +17,7 @@ import {
 } from "react-native";
 import IngredientsSelection from "../product/IngredientsSelection";
 import Product from "../product/Product";
+import ProductPill from "../product/ProductPill";
 import CardText from "../text/CardText";
 
 interface ResultsModalProps extends ModalProps {
@@ -35,6 +38,19 @@ export default function ResultsModal({
     productLoading,
     altsLoading,
 }: ResultsModalProps) {
+    const flatListRef = useRef<FlatList<ProductType>>(null);
+    const [pillVisible, setPillVisible] = useState<boolean>(false);
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+
+    function onViewableItemsChanged(info: { viewableItems: ListViewToken[] }) {
+        const firstItemViewable = info.viewableItems.find((item) => item.index === 0);
+        const secondItemViewable = info.viewableItems.find((item) => item.index === 1);
+        if (firstItemViewable && pillVisible) {
+            setPillVisible(false);
+        } else if (secondItemViewable && !firstItemViewable && !pillVisible) {
+            setPillVisible(true);
+        }
+    }
     const renderAlternatives: ListRenderItem<any> = ({ item }) => {
         return altsLoading ? <ActivityIndicator /> : <Product product={item} expandedToggleable />;
     };
@@ -66,8 +82,9 @@ export default function ResultsModal({
         return productLoading || !product ? (
             <ActivityIndicator />
         ) : (
-            <>
+            <View style={styles.scannedProductContainer}>
                 <Text style={styles.modalSection}>Scanned Product</Text>
+                <Text>Barcode: {barcode}</Text>
                 <Product isMainProduct product={product} expandedToggleable={false} />
                 {!!product && !!product.ingredientTags ? (
                     <IngredientsSelection
@@ -80,25 +97,36 @@ export default function ResultsModal({
                 <CardText variant="subtitle" style={{ marginBottom: 15 }}>
                     Matched Category - {product.category?.split(":").pop()}
                 </CardText>
-            </>
+            </View>
         );
+    };
+
+    const handlePillPress = () => {
+        flatListRef?.current?.scrollToOffset({ offset: 0, animated: true });
     };
 
     return (
         <Modal visible={!!visible} animationType="slide" transparent onRequestClose={reset}>
             <View style={styles.modalRoot}>
                 <View style={styles.sheet}>
-                    <View style={styles.modalHeader}>
-                        <Text>Barcode: {barcode}</Text>
+                    {pillVisible ? (
+                        <View style={styles.productPillPosition}>
+                            <ProductPill onPress={handlePillPress} product={product} />
+                        </View>
+                    ) : null}
+                    <View style={styles.closeIconPosition}>
                         <TouchableOpacity onPress={reset} hitSlop={12}>
                             <Ionicons name="close" size={24} color="#333" />
                         </TouchableOpacity>
                     </View>
                     <FlatList
+                        ref={flatListRef}
                         contentContainerStyle={styles.flatlistContainer}
                         data={filterAlts()}
                         ListHeaderComponent={renderScannedProduct}
                         renderItem={renderAlternatives}
+                        onViewableItemsChanged={onViewableItemsChanged}
+                        viewabilityConfig={{ itemVisiblePercentThreshold: 100 }}
                     />
                 </View>
             </View>
@@ -116,19 +144,29 @@ const styles = StyleSheet.create({
     },
     sheet: {
         backgroundColor: "rgba(255, 255, 255, 0.9)",
-        paddingTop: 24,
-        paddingBottom: 48,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         gap: 12,
         height: "80%",
         width: "100%",
     },
-    modalHeader: {
-        ...padding,
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
+    productPillPosition: {
+        position: "absolute",
+        top: 15,
+        left: 15,
+        zIndex: 5,
+    },
+    closeIconPosition: {
+        position: "absolute",
+        top: 15,
+        right: 15,
+        zIndex: 5,
+    },
+    scannedProductContainer: {
+        marginTop: 24,
+    },
+    modalHeaderInfo: {
+        flexDirection: "column",
     },
     modalSection: {
         fontSize: 20,

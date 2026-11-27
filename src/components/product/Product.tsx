@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     },
     cardLine: {
         flexDirection: "row",
-        marginTop: 3,
+        marginTop: 10,
     },
     cardText: {
         wordWrap: "wrap",

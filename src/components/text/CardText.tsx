@@ -15,14 +15,11 @@ const styles = StyleSheet.create({
         ...fontColor,
         fontSize: 12,
         fontWeight: 500,
-        paddingBottom: 6,
     },
     title: {
         ...fontColor,
         fontSize: 16,
         fontWeight: 600,
-        marginBottom: 12,
-        marginRight: 6,
     },
     subtitle: {
         ...fontColor,
