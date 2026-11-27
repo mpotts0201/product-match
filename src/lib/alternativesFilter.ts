@@ -48,17 +48,7 @@ export function alternativesFilter(product: Product, alts: Product[]) {
         return !hasSameBrand;
     });
 
-    const altsWithMainIngredient = product.mainIngredient
-        ? dedupedByBrand.filter((alt) => {
-              const cleanIngs = (alt.ingredientTags ?? []).slice(0, 6).map((ing: string) => {
-                  return formatIngredients(ing);
-              });
-              if (cleanIngs.length == 0) return false;
-              return cleanIngs.includes(product.mainIngredient);
-          })
-        : dedupedByBrand;
-
-    return altsWithMainIngredient;
+    return dedupedByBrand;
 }
 
 export function normalizeTag(tag: string): string {

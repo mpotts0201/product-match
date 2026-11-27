@@ -1,3 +1,4 @@
+import { filterGenericTags } from "@/lib/alternativesFilter";
 import { Product as ProductType } from "@/types/product";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useEffect, useState } from "react";
@@ -41,7 +42,8 @@ export default function ResultsModal({
     const [ingredientSelections, setIngredientSelections] = useState<string[]>([]);
 
     useEffect(() => {
-        setIngredientSelections(product?.mainIngredient ? [product.mainIngredient] : []);
+        const firstIng = filterGenericTags(product?.ingredientTags ?? [])[0];
+        setIngredientSelections([firstIng]);
     }, [product?.code]);
 
     const handleSelectIngredient = (selection: string) => {
@@ -68,10 +70,10 @@ export default function ResultsModal({
                 <Text style={styles.modalSection}>Scanned Product</Text>
                 <Product isMainProduct product={product} expandedToggleable={false} />
                 <Text style={styles.modalSection}>Alternative Products</Text>
-                <CardText variant="subtitle" style={{ marginTop: 15 }}>
+                <CardText variant="subtitle" style={{ marginBottom: 15 }}>
                     Matched Category - {product.category?.split(":").pop()}
                 </CardText>
-                {!!product && !!product.ingredientSelections ? (
+                {!!product && !!product.ingredientTags ? (
                     <IngredientsSelection
                         selectedIngredients={ingredientSelections}
                         ingredients={product.ingredientTags}
@@ -81,11 +83,6 @@ export default function ResultsModal({
             </>
         );
     };
-
-    console.log("main:", product?.mainIngredient);
-    console.log("selected:", ingredientSelections);
-    console.log("first alt tags:", alternatives?.[0]?.ingredientTags?.slice(0, 8));
-    console.log("filtered count:", filterAlts()?.length, "of", alternatives?.length);
 
     return (
         <Modal visible={!!visible} animationType="slide" transparent onRequestClose={reset}>

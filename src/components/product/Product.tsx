@@ -42,14 +42,6 @@ export default function Product({ product, expandedToggleable, isMainProduct }: 
                 ) : null}
             </View>
             <View style={styles.cardRight}>
-                {!!product.category ? (
-                    <CardText variant="body">
-                        Category - {product.category.split(":").pop()}
-                    </CardText>
-                ) : null}
-                {!!product.mainIngredient ? (
-                    <CardText variant="body">Main Ingredient - {product.mainIngredient}</CardText>
-                ) : null}
                 {!!product?.allergens ? (
                     <CardLine
                         includes={!product.allergens.includes("en:gluten")}

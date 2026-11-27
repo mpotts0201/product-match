@@ -22,7 +22,6 @@ export async function getProduct(barcode: string) {
 
 // category is "compared_to_category" and brands from "brands_tags" in json from getProduct
 export async function getAlternatives(category: string, brands: string[] = []) {
-    console.log(category, brands);
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 30000);
 

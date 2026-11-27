@@ -1,4 +1,4 @@
-import { formatIngredients, GENERIC_TAGS, normalizeIngredientTags } from "@/lib/alternativesFilter";
+import { normalizeIngredientTags } from "@/lib/alternativesFilter";
 import { Product } from "@/types/product";
 
 // src/api/mappers.ts
@@ -15,8 +15,6 @@ export function mapBarcodeProduct(raw: any): Product {
         quantity: raw.quantity,
         category: raw.compared_to_category,
         traces: raw.traces_tags ?? [],
-        mainIngredient: getMainIngredient(raw.ingredients_tags ?? []),
-        ingredientSelections: setIngredientSelections(raw.ingredients_tags ?? []),
     };
 }
 
@@ -34,26 +32,4 @@ export function mapSearchHit(raw: any): Product {
         category: undefined, // only needed for the scanned product
         traces: raw.traces ?? [],
     };
-}
-
-function getMainIngredient(ingredientTags: string[]): string {
-    const mainIngredients = (ingredientTags ?? []).map((ing: string) => {
-        return formatIngredients(ing);
-    });
-
-    let mainIngredient = "";
-    for (const ing of mainIngredients) {
-        if (!GENERIC_TAGS.has(ing ?? "")) {
-            mainIngredient = ing ?? "";
-            break;
-        }
-    }
-    return mainIngredient;
-}
-
-function setIngredientSelections(ingredients: string[]): string[] {
-    return ingredients.filter((ing) => {
-        const formattedIng = ing.split(":").pop() ?? "";
-        return !GENERIC_TAGS.has(formattedIng);
-    });
 }

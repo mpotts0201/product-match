@@ -22,7 +22,7 @@ export default function IngredientsSelection({
                     style={selected ? styles.ingredientPillSelected : styles.ingredientPillDefault}
                     onPress={() => onPress(ing)}
                 >
-                    <CardText variant="body">{ing.split(":").pop()}</CardText>
+                    <CardText variant="body">{ing}</CardText>
                 </TouchableOpacity>
             );
         });
