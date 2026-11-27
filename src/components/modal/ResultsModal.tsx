@@ -69,10 +69,6 @@ export default function ResultsModal({
             <>
                 <Text style={styles.modalSection}>Scanned Product</Text>
                 <Product isMainProduct product={product} expandedToggleable={false} />
-                <Text style={styles.modalSection}>Alternative Products</Text>
-                <CardText variant="subtitle" style={{ marginBottom: 15 }}>
-                    Matched Category - {product.category?.split(":").pop()}
-                </CardText>
                 {!!product && !!product.ingredientTags ? (
                     <IngredientsSelection
                         selectedIngredients={ingredientSelections}
@@ -80,6 +76,10 @@ export default function ResultsModal({
                         onPress={handleSelectIngredient}
                     />
                 ) : null}
+                <Text style={styles.modalSection}>Alternative Products</Text>
+                <CardText variant="subtitle" style={{ marginBottom: 15 }}>
+                    Matched Category - {product.category?.split(":").pop()}
+                </CardText>
             </>
         );
     };

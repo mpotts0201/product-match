@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
     selectionContainer: {
         flexDirection: "row",
         flexWrap: "wrap",
+        marginBottom: 15,
     },
     ingredientPillDefault: {
         borderRadius: 15,
