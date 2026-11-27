@@ -74,7 +74,7 @@ export default function ResultsModal({
                 {!!product && !!product.ingredientSelections ? (
                     <IngredientsSelection
                         selectedIngredients={ingredientSelections}
-                        ingredients={product.ingredientSelections}
+                        ingredients={product.ingredientTags}
                         onPress={handleSelectIngredient}
                     />
                 ) : null}

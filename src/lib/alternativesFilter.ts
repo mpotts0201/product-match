@@ -72,3 +72,11 @@ export function normalizeTag(tag: string): string {
 export function formatIngredients(tag: string) {
     return tag.split(":").pop();
 }
+
+export function normalizeIngredientTags(tags: string[]) {
+    return tags.map((tag: string) => normalizeTag(tag));
+}
+
+export function filterGenericTags(tags: string[]) {
+    return tags.filter((ing) => !GENERIC_TAGS.has(ing));
+}

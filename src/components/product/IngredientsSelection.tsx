@@ -1,4 +1,5 @@
 import CardText from "@/components/text/CardText";
+import { filterGenericTags } from "@/lib/alternativesFilter";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 type IngredientsSelectionProps = {
@@ -13,7 +14,7 @@ export default function IngredientsSelection({
     onPress,
 }: IngredientsSelectionProps) {
     const renderSelections = () => {
-        return ingredients.map((ing, i) => {
+        return filterGenericTags(ingredients).map((ing, i) => {
             const selected = selectedIngredients.includes(ing);
             return (
                 <TouchableOpacity
